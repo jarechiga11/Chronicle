@@ -47,59 +47,61 @@
 
 <!-- JavaScript -->
 <script>
-import Journal from '@/models/journal.class'
-import firebase from "firebase"
-import db from "../fbInit"
- 
+import Journal from "@/models/journal.class";
+import firebase from "firebase";
+import db from "../fbInit";
+
 export default {
-    name: 'JournalCard',
-    // components: {
+  name: "JournalCard",
+  // components: {
 
-    // },
-    props:{
-        currentUsername: String,
-        journal:  Journal
+  // },
+  props: {
+    currentUsername: String,
+    journal: Journal
+  },
+  data() {
+    return {
+      imgURL: "",
+      status: ""
+    };
+  },
+  methods: {
+    showModal() {
+      this.$refs.settingsModal.show();
     },
-    data() {
-        return {
-             imgURL: '',
-             status: ''   
-        }
-    },
-    methods: {
-        showModal () {
-            this.$refs.settingsModal.show()
-        },
 
-        handleOK(evt) {
-            evt.preventDefault()
-            if(!this.imgURL && !this.status){
-                alert("Please enter at least one field")
-            }else{
-                db.collection("journals").where("userID", "==", firebase.auth().currentUser.uid).where('title', '==', this.journal.title).get().then(snapshot => {
-                    snapshot.forEach(doc => {
-                        if(this.imgURL){
-                            doc.update({
-                                image: this.imgURL
-                            })
-                        }
-                        if(this.status == 'true'){
-                            doc.update({
-                                archived: true
-                            })
-                        }else if(this.status == 'false'){
-                            doc.update({
-                                archived: false
-                            })
-                        }
-                    })
-                })
-                
-            }
-        },
-
+    handleOK(evt) {
+      evt.preventDefault();
+      if (!this.imgURL && !this.status) {
+        alert("Please enter at least one field");
+      } else {
+        db.collection("journals")
+          .where("userID", "==", firebase.auth().currentUser.uid)
+          .where("title", "==", this.journal.title)
+          .get()
+          .then(snapshot => {
+            snapshot.forEach(doc => {
+              if (this.imgURL) {
+                doc.update({
+                  image: this.imgURL
+                });
+              }
+              if (this.status == "true") {
+                doc.update({
+                  archived: true
+                });
+              } else if (this.status == "false") {
+                doc.update({
+                  archived: false
+                });
+              }
+            });
+          });
+      }
     }
-}
+  }
+};
 </script>
 
 <!-- CSS -->
@@ -107,18 +109,24 @@ export default {
 .bg-custom-dark {
   background-color: rgb(43, 47, 53);
 }
-.journal-card{
-    cursor: pointer;
+.journal-card {
+  cursor: pointer;
 }
-.journal-card h6, .journal-card h4 {
-    text-align: left;
+.journal-card h6,
+.journal-card h4 {
+  text-align: left;
 }
 .journal-card h6 {
-    color: gray;
+  color: gray;
 }
 .journal-card .journal-settings {
-    text-align: right;
-    color: gray; 
-    z-index: 100;
+  text-align: right;
+  color: gray;
+  z-index: 100;
+}
+.card-img-top {
+  width: 100%;
+  height: 20vw;
+  object-fit: cover;
 }
 </style>

@@ -49,6 +49,14 @@
               <JournalCard v-bind:currentUsername="currentUsername" v-bind:journal="journal"/>
             </b-col> 
           </b-row>
+          <!-- NEW STUFF TO WORK ON -->
+          <!-- <b-row>
+            <b-list-group flush style="width: 100%;">
+              <b-list-group-item v-for="journal in filteredList" :key="journal.title">
+                <JournalListItem v-bind:currentUsername="currentUsername" v-bind:journal="journal"/>
+              </b-list-group-item>
+            </b-list-group>
+          </b-row> -->
         </b-col>
       </b-row>
     </b-container>
@@ -61,6 +69,7 @@ import firebase from "firebase"
 import Sidebar from "@/components/Sidebar.vue"
 import MobileNav from "@/components/MobileNav.vue"
 import JournalCard from "@/components/JournalCard.vue"
+import JournalListItem from "@/components/JournalList.vue"
 import db from "../fbInit"
 import Journal from '@/models/journal.class'
 
@@ -69,30 +78,39 @@ export default {
   components: {
     Sidebar,
     MobileNav,
-    JournalCard
+    JournalCard,
+    JournalListItem
   },
   // props:{
 
   // },
   data() {
     return {
-      journals: [],
-      searchText: '',
-      newTitle: '',
-      currentUsername: '',
+      journals: [], // Stores all of the user's journals retrieved from Cloud Firestore
+      searchText: '', // Reactively updates when user is typing into the Search Bar
+      newTitle: '', // Variable to store the Title of a newly created Journal
+      currentUsername: '', // Keeps track of the current user and their username
     };
   },
-  // Runs these functions when page is loaded
-  mounted() {
+
+  mounted() { // Mounted runs when page is first loaded
     this.getUser()
     this.getJournals()
   },
+
   methods: {
-    // Clears any previously inputted data if modal is closed.
+
+    /** Clears the New Journal Modal of any previous input. */
     clearModal() {
       this.newTitle = ''
     },
-    // When a user submits a new journal form
+
+    /** 
+    * Determines what happens when a user submits a new Journal.
+    * Triggers newJournal method if no error.
+    * @param {event} evt : the submit event
+    * @returns {error} alert: if a journal with inputted title already exists.
+    */
     handleOK(evt) {
       evt.preventDefault()
       if(!this.newTitle){
@@ -110,7 +128,8 @@ export default {
         }
       }
     },
-    // Adds a new journal to Cloud Firestore
+
+    /** Adds a new journal to Cloud Firestore. Refreshes list of journals. */
     newJournal() {
       db.collection('journals').add({
         userID: firebase.auth().currentUser.uid,
@@ -126,7 +145,11 @@ export default {
       this.getJournals()
       this.$refs.jModal.hide()
     },
-    // grabs all journals associated with the user
+
+    /** 
+     * Retrieves all journals associated with current User.
+     * Stores retrieved journals into journals array. 
+     */
     getJournals(){
       db.collection("journals").where("userID", "==", firebase.auth().currentUser.uid).orderBy('startDate', 'desc').get().then(snapshot => {
         snapshot.forEach(doc => {
@@ -145,7 +168,8 @@ export default {
         })
       })
     },
-    // Gets the current user's username
+
+    /** Retrieves the username of the current User. */
     getUser(){
       db.collection("users").where("userID", "==", firebase.auth().currentUser.uid).get().then(snapshot => {
         snapshot.forEach(doc => {
@@ -154,6 +178,7 @@ export default {
       })
     },
   }, 
+
   // Filters journals based on search text
   computed: {
     filteredList() {
