@@ -50,13 +50,13 @@
             </b-col> 
           </b-row>
           <!-- NEW STUFF TO WORK ON -->
-          <!-- <b-row>
-            <b-list-group flush style="width: 100%;">
+          <b-row>
+            <b-list-group flush style="width: 100%; text-align: left;">
               <b-list-group-item v-for="journal in filteredList" :key="journal.title">
                 <JournalListItem v-bind:currentUsername="currentUsername" v-bind:journal="journal"/>
               </b-list-group-item>
             </b-list-group>
-          </b-row> -->
+          </b-row>
         </b-col>
       </b-row>
     </b-container>
@@ -287,6 +287,11 @@ export default {
 }
 .journal-col {
   padding: 15px;
+}
+.list-group-item {
+  background-color: rgb(36, 37, 39);
+  border: 0;
+  border-bottom: 2px solid rgb(43, 47, 53);
 }
 /* When screen is Small or XS*/
 @media (max-width: 767px) {

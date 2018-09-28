@@ -1,20 +1,22 @@
 <!-- HTML -->
 <template>
     <div class="app-journal-card">
-        <!-- :title="title"
-                :sub-title="startDate" -->
+        <!-- :img-src="journalImg"
+                img-alt="Journal image"
+                img-top -->
         <b-card no-body
                 bg-variant="custom-dark"
                 text-variant="white"
-                :img-src="[journal.image == '' ? 'https://firebasestorage.googleapis.com/v0/b/chronicle-firebase11.appspot.com/o/assets%2Fhome-bg1.png?alt=media&token=25b5247f-c5a6-40f8-9988-a5da97694cbc' : journal.image]"
-                img-alt="Journal image"
-                img-top
                 tag="article"
+                header-tag="header"
                 footer-tag="footer"
                 footer="custom-dark"
                 class="journal-card"
                 style=""
                 @click="$router.push({name: 'journal-detail', params : {username: currentUsername, currentJournal: journal.title}})">
+            <div slot='header' class="journal-img-container">
+                <img class='journal-img' :src="journalImg" alt="journal image">
+            </div>
             <b-row slot="footer">
                 <b-col cols="12">
                     <h4>{{journal.title}}</h4>
@@ -100,7 +102,19 @@ export default {
           });
       }
     }
-  }
+  },
+  computed: {
+    journalImg() {
+        let image = ''
+        if (this.journal.image == ''){
+            image = 'https://firebasestorage.googleapis.com/v0/b/chronicle-firebase11.appspot.com/o/assets%2Fhome-bg1.png?alt=media&token=25b5247f-c5a6-40f8-9988-a5da97694cbc'
+        }else{
+            image = this.journal.image
+        }
+        return image
+    }
+  },
+
 };
 </script>
 
@@ -124,9 +138,32 @@ export default {
   color: gray;
   z-index: 100;
 }
-.card-img-top {
-  width: 100%;
-  height: 20vw;
-  object-fit: cover;
+.card-header{
+    padding: 0;
 }
+.card-header, .card-footer{
+    border: 0;
+}
+.journal-img-container{
+	position: relative;
+	width: 100%;		/* desired width */
+}
+.journal-img-container:before{
+	content: "";
+	display: block;
+	padding-top: 80%; 	/* initial ratio of 1:1*/
+}
+.journal-img{
+	position:  absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 2px 2px 0 0;
+}
+
 </style>

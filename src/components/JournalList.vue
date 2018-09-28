@@ -1,18 +1,18 @@
 <!-- HTML -->
 <template>
-  <div class="app-journal-card">
+  <div class="app-journal-list-item">
     <b-row>
-      <b-col cols="4" md="2">
+      <b-col cols="4" md='3' lg="2">
         <img :src="[journal.image == '' ? 'https://firebasestorage.googleapis.com/v0/b/chronicle-firebase11.appspot.com/o/assets%2Fhome-bg1.png?alt=media&token=25b5247f-c5a6-40f8-9988-a5da97694cbc' : journal.image]" alt="" width="100%" height="100px">
       </b-col>
-      <b-col cols="7" md="9">
+      <b-col cols="7" md='8' lg="9">
         <div>
           <h4>{{journal.title}}</h4>
         </div>
         <small >{{journal.startDate}}</small>
       </b-col>
       <b-col cols="1">
-        <h6 class="journal-settings"><a @click.stop="showModal()"><fa-icon icon="cog"></fa-icon></a></h6>
+        <span class="journal-settings"><a @click.stop="showModal()"><fa-icon icon="cog"></fa-icon></a></span>
       </b-col>
     </b-row>
     <!-- Journal Settings Modal -->
@@ -94,27 +94,21 @@ export default {
 
 <!-- CSS -->
 <style scoped>
+.app-journal-list-item {
+  color: white;
+}
 .bg-custom-dark {
   background-color: rgb(43, 47, 53);
 }
-.journal-card {
-  cursor: pointer;
+.journal-settings {
+  position: absolute;
+  bottom: 0;
 }
-.journal-card h6,
-.journal-card h4 {
-  text-align: left;
+img{
+  max-width: 150px;
 }
-.journal-card h6 {
-  color: gray;
-}
-.journal-card .journal-settings {
-  text-align: right;
-  color: gray;
-  z-index: 100;
-}
-.card-img-top {
-  width: 100%;
-  height: 20vw;
-  object-fit: cover;
+small {
+  position: absolute;
+  bottom: 0;
 }
 </style>
