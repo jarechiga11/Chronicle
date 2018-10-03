@@ -2,10 +2,10 @@
 <template>
   <div class="app-journal-list-item">
     <b-row>
-      <b-col cols="4" md='3' lg="2">
-        <img :src="[journal.image == '' ? 'https://firebasestorage.googleapis.com/v0/b/chronicle-firebase11.appspot.com/o/assets%2Fhome-bg1.png?alt=media&token=25b5247f-c5a6-40f8-9988-a5da97694cbc' : journal.image]" alt="" width="100%" height="100px">
+      <b-col cols="4" sm='3' lg="2">
+        <img :src="journalImg" alt="" width="100%" height="100px">
       </b-col>
-      <b-col cols="7" md='8' lg="9">
+      <b-col cols="7" sm='8' lg="9">
         <div>
           <h4>{{journal.title}}</h4>
         </div>
@@ -24,8 +24,7 @@
         <b-form-checkbox id="checkbox1"
           v-model="status"
           value="true"
-          unchecked-value="false"
-          checked="checked">
+          unchecked-value="false">
           Archive
         </b-form-checkbox>
       </b-form>
@@ -51,11 +50,11 @@ export default {
   data() {
     return {
       imgURL: "",
-      status: ""
+      status: "",
     };
   },
   methods: {
-    showModal() {
+    showModal() { 
       this.$refs.settingsModal.show();
     },
 
@@ -69,18 +68,19 @@ export default {
           .where("title", "==", this.journal.title)
           .get()
           .then(snapshot => {
+            console.log(snapshot)
             snapshot.forEach(doc => {
               if (this.imgURL) {
-                doc.update({
+                db.collection("journals").doc(doc.id).update({
                   image: this.imgURL
                 });
               }
               if (this.status == "true") {
-                doc.update({
+                db.collection("journals").doc(doc.id).update({
                   archived: true
                 });
               } else if (this.status == "false") {
-                doc.update({
+                db.collection("journals").doc(doc.id).update({
                   archived: false
                 });
               }
@@ -88,7 +88,18 @@ export default {
           });
       }
     }
-  }
+  },
+  computed: {
+    journalImg() {
+        let image = ''
+        if (this.journal.image == ''){
+            image = 'https://firebasestorage.googleapis.com/v0/b/chronicle-firebase11.appspot.com/o/assets%2Fhome-bg1.png?alt=media&token=25b5247f-c5a6-40f8-9988-a5da97694cbc'
+        }else{
+            image = this.journal.image
+        }
+        return image
+    }
+  },
 };
 </script>
 

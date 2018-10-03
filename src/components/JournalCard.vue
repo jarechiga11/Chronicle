@@ -1,9 +1,6 @@
 <!-- HTML -->
 <template>
     <div class="app-journal-card">
-        <!-- :img-src="journalImg"
-                img-alt="Journal image"
-                img-top -->
         <b-card no-body
                 bg-variant="custom-dark"
                 text-variant="white"
@@ -31,6 +28,7 @@
         </b-card>
         <!-- Journal Settings Modal -->
         <b-modal ref='settingsModal' title="Journal Settings" ok-title="Save" centered @ok="handleOK">
+            <!-- Make into a component -->
             <p>Picture URL:</p>
             <b-form> 
             <b-form-input v-model="imgURL" required type="url" :placeholder="journal.image"></b-form-input>
@@ -38,9 +36,8 @@
             <b-form-checkbox id="checkbox1"
                     v-model="status"
                     value="true"
-                    unchecked-value="false"
-                    checked="checked">
-                Archive
+                    unchecked-value="false">
+                Archive: {{status}}
             </b-form-checkbox>
         </b-form>
         </b-modal>
@@ -54,67 +51,66 @@ import firebase from "firebase";
 import db from "../fbInit";
 
 export default {
-  name: "JournalCard",
-  // components: {
+    name: "JournalCard",
+    // components: {
 
-  // },
-  props: {
-    currentUsername: String,
-    journal: Journal
-  },
-  data() {
-    return {
-      imgURL: "",
-      status: ""
-    };
-  },
-  methods: {
-    showModal() {
-      this.$refs.settingsModal.show();
+    // },
+    props: {
+        currentUsername: String,
+        journal: Journal
     },
+    data() {
+        return {
+        imgURL: "",
+        status: ""
+        };
+    },
+    methods: {
+        showModal() {
+        this.$refs.settingsModal.show();
+        },
 
-    handleOK(evt) {
-      evt.preventDefault();
-      if (!this.imgURL && !this.status) {
-        alert("Please enter at least one field");
-      } else {
-        db.collection("journals")
-          .where("userID", "==", firebase.auth().currentUser.uid)
-          .where("title", "==", this.journal.title)
-          .get()
-          .then(snapshot => {
-            snapshot.forEach(doc => {
-              if (this.imgURL) {
-                doc.update({
-                  image: this.imgURL
+        handleOK(evt) {
+        evt.preventDefault();
+        if (!this.imgURL && !this.status) {
+            alert("Please enter at least one field");
+        } else {
+            db.collection("journals")
+            .where("userID", "==", firebase.auth().currentUser.uid)
+            .where("title", "==", this.journal.title)
+            .get()
+            .then(snapshot => {
+                snapshot.forEach(doc => {
+                    if (this.imgURL) {
+                        db.collection("journals").doc(doc.id).update({
+                            image: this.imgURL
+                        });
+                    }
+                    if (this.status == "true") {
+                        db.collection("journals").doc(doc.id).update({
+                            archived: true
+                        });
+                    } else if (this.status == "false") {
+                        db.collection("journals").doc(doc.id).update({
+                            archived: false
+                        });
+                    }
                 });
-              }
-              if (this.status == "true") {
-                doc.update({
-                  archived: true
-                });
-              } else if (this.status == "false") {
-                doc.update({
-                  archived: false
-                });
-              }
             });
-          });
-      }
-    }
-  },
-  computed: {
-    journalImg() {
-        let image = ''
-        if (this.journal.image == ''){
-            image = 'https://firebasestorage.googleapis.com/v0/b/chronicle-firebase11.appspot.com/o/assets%2Fhome-bg1.png?alt=media&token=25b5247f-c5a6-40f8-9988-a5da97694cbc'
-        }else{
-            image = this.journal.image
         }
-        return image
-    }
-  },
-
+        }
+    },
+    computed: {
+        journalImg() {
+            let image = ''
+            if (this.journal.image == ''){
+                image = 'https://firebasestorage.googleapis.com/v0/b/chronicle-firebase11.appspot.com/o/assets%2Fhome-bg1.png?alt=media&token=25b5247f-c5a6-40f8-9988-a5da97694cbc'
+            }else{
+                image = this.journal.image
+            }
+            return image
+        }
+    },
 };
 </script>
 
@@ -165,5 +161,4 @@ export default {
     object-fit: cover;
     border-radius: 2px 2px 0 0;
 }
-
 </style>
