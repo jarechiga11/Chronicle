@@ -5,18 +5,24 @@
       <b-col cols="4" sm='3' lg="2">
         <img :src="journalImg" alt="" width="100%" height="100px">
       </b-col>
-      <b-col cols="7" sm='8' lg="9">
-        <div>
-          <h4>{{journal.title}}</h4>
-        </div>
-        <small >{{journal.startDate}}</small>
-      </b-col>
-      <b-col cols="1">
-        <span class="journal-settings"><a @click.stop="showModal()"><fa-icon icon="cog"></fa-icon></a></span>
+      <b-col cols="8" sm='9' lg="10">
+        <b-row class="journal-title-row">
+          <b-col>
+            <h4>{{journal.title}}</h4>
+          </b-col>
+        </b-row>
+        <b-row class="journal-sub-row">
+          <b-col cols="10">
+            <small >{{journal.startDate}}</small>
+          </b-col>
+          <b-col class="journal-settings-col" cols="2">
+            <span><a @click.stop="showModal()"><fa-icon icon="cog"></fa-icon></a></span>
+          </b-col>
+        </b-row>
       </b-col>
     </b-row>
     <!-- Journal Settings Modal -->
-    <b-modal ref='settingsModal' title="Journal Settings" ok-title="Save" centered @ok="handleOK">
+    <b-modal class="journal-settings-modal" ref='settingsModal' title="Journal Settings" ok-title="Save" centered @ok="handleOK">
       <p>Picture URL:</p>
       <b-form> 
         <b-form-input v-model="imgURL" required type="url" :placeholder="journal.image"></b-form-input>
@@ -111,15 +117,19 @@ export default {
 .bg-custom-dark {
   background-color: rgb(43, 47, 53);
 }
-.journal-settings {
-  position: absolute;
-  bottom: 0;
-}
 img{
   max-width: 150px;
 }
-small {
-  position: absolute;
-  bottom: 0;
+.journal-title-row {
+  height: 80%;
+}
+.journal-sub-row{
+  color: gray;
+}
+.journal-settings-col {
+  text-align: center;
+}
+.journal-settings-modal {
+  color: black;
 }
 </style>

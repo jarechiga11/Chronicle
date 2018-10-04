@@ -27,7 +27,7 @@
             </b-row>
         </b-card>
         <!-- Journal Settings Modal -->
-        <b-modal ref='settingsModal' title="Journal Settings" ok-title="Save" centered @ok="handleOK">
+        <b-modal class="journal-settings-modal" ref='settingsModal' title="Journal Settings" ok-title="Save" centered @ok="handleOK">
             <!-- Make into a component -->
             <p>Picture URL:</p>
             <b-form> 
@@ -123,7 +123,8 @@ export default {
   cursor: pointer;
 }
 .journal-card h6,
-.journal-card h4 {
+.journal-card h4,
+.journal-settings-modal {
   text-align: left;
 }
 .journal-card h6 {
