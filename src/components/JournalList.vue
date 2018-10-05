@@ -27,11 +27,8 @@
       <b-form> 
         <b-form-input v-model="imgURL" required type="url" :placeholder="journal.image"></b-form-input>
         <br>
-        <b-form-checkbox id="checkbox1"
-          v-model="status"
-          value="true"
-          unchecked-value="false">
-          Archive
+        <b-form-checkbox v-model="status" value="true" unchecked-value="false">
+          Archive <strong>{{status}} - {{journal.archived}}</strong>
         </b-form-checkbox>
       </b-form>
     </b-modal>
@@ -40,9 +37,9 @@
 
 <!-- JavaScript -->
 <script>
-import Journal from "@/models/journal.class";
-import firebase from "firebase";
-import db from "../fbInit";
+import Journal from "@/models/journal.class"
+import firebase from "firebase"
+import db from "../fbInit"
 
 export default {
   name: "JournalListItem",
@@ -56,7 +53,7 @@ export default {
   data() {
     return {
       imgURL: "",
-      status: "",
+      status: this.journal.archived,
     };
   },
   methods: {
@@ -64,34 +61,41 @@ export default {
       this.$refs.settingsModal.show();
     },
 
+    updateJournal() {
+      db.collection("journals")
+        .where("userID", "==", firebase.auth().currentUser.uid)
+        .where("title", "==", this.journal.title)
+        .get().then(snapshot => {
+          snapshot.forEach(doc => {
+            if (this.imgURL) {
+              db.collection("journals").doc(doc.id).update({
+                image: this.imgURL
+              });
+            }
+            if (this.status == "true") {
+              db.collection("journals").doc(doc.id).update({
+                archived: true
+              });
+            } else if (this.status == "false") {
+              db.collection("journals").doc(doc.id).update({
+                archived: false
+              });
+            }
+          });
+        });
+      
+      return new Promise (function(resolve, reject){
+        resolve("updated journal!")
+      })
+    },
+
     handleOK(evt) {
       evt.preventDefault();
       if (!this.imgURL && !this.status) {
         alert("Please enter at least one field");
       } else {
-        db.collection("journals")
-          .where("userID", "==", firebase.auth().currentUser.uid)
-          .where("title", "==", this.journal.title)
-          .get()
-          .then(snapshot => {
-            console.log(snapshot)
-            snapshot.forEach(doc => {
-              if (this.imgURL) {
-                db.collection("journals").doc(doc.id).update({
-                  image: this.imgURL
-                });
-              }
-              if (this.status == "true") {
-                db.collection("journals").doc(doc.id).update({
-                  archived: true
-                });
-              } else if (this.status == "false") {
-                db.collection("journals").doc(doc.id).update({
-                  archived: false
-                });
-              }
-            });
-          });
+        this.updateJournal().then(this.$parent.refreshJournals())
+        this.$refs.settingsModal.hide()
       }
     }
   },

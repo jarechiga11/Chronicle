@@ -141,8 +141,7 @@ export default {
         shareLink: '',
         archived: false,
       })
-      this.journals = []
-      this.getJournals()
+      this.refreshJournals()
       this.$refs.jModal.hide()
     },
 
@@ -162,11 +161,16 @@ export default {
           data.image = doc.data().image
           data.password = doc.data().password
           data.shareLink = doc.data().shareLink
-          data.archived = false
+          data.archived = doc.data().archived
           
           this.journals.push(data);
         })
       })
+    },
+
+    refreshJournals() {
+      this.journals = []
+      this.getJournals()
     },
 
     /** Retrieves the username of the current User. */
@@ -187,6 +191,10 @@ export default {
       })
     }
   }, 
+  watch: {
+    
+
+  },
 }
 </script>
 
