@@ -1,7 +1,7 @@
 <!-- HTML -->
 <template>
   <div class="app-journal-list-item">
-    <b-row>
+    <b-row class="journal-item" @click="$router.push({name: 'journal-detail', params : {username: currentUsername, currentJournal: journal.title}})">
       <b-col cols="4" sm='3' lg="2">
         <img :src="journalImg" alt="" width="100%" height="100px">
       </b-col>
@@ -123,6 +123,9 @@ export default {
 }
 img{
   max-width: 150px;
+}
+.journal-item {
+  cursor: pointer;
 }
 .journal-title-row {
   height: 80%;

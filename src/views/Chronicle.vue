@@ -1,7 +1,7 @@
 <!-- HTML -->
 <template>
   <div class="app-chronicle">
-  <!-- Mobile Items -->
+    <!-- Mobile Items -->
     <div class="chr-nav-mobile">
       <!-- Mobile Top Bar -->
       <div class="chr-mobile-top">
@@ -11,45 +11,46 @@
       <!-- Mobile Bottom Bar -->
       <MobileNav page="home"/>
     </div>
-<!-- Main Content -->
+    <!-- Main Content -->
     <b-container class="chr-container">
       <b-row class="chr-row">
-  <!-- Sidebar -->
+        <!-- Sidebar -->
         <b-col cols="1" lg="2" class="chr-sidebar-col">
           <Sidebar page="home"/>
         </b-col>
-    <!-- User Chronicle = *Journals/Entries -->
+        <!-- User Chronicle = *Journals/Entries -->
         <b-col class="chr-main-col">
-        <!-- Mobile Search -->
+          <!-- Mobile Search -->
           <b-row class="top-row-mobile">
             <b-col>
               <b-form-input v-model="searchText" type="text" placeholder="Search or Filter..."></b-form-input>
             </b-col>
           </b-row>
-        <!-- Top Bar-->
+          <!-- Top Bar-->
           <b-row class="top-row" align-h="center">
-          <!-- Search/Filter Bar -->
+            <!-- Search/Filter Bar -->
             <b-col cols="10">
               <b-form-input v-model="searchText" type="text" placeholder="Search or Filter..."></b-form-input>
             </b-col>
-          <!-- Add Journal button -->
+            <!-- Add Journal button -->
             <b-col cols="1">
               <b-button class="add-journal-btn" variant="dark shadow-none" v-b-modal.journalModal><fa-icon icon="plus"></fa-icon></b-button>
             </b-col>
           </b-row>
-        <!-- New Journal Modal Pop Up -->
+          <!-- New Journal Modal Pop Up -->
           <b-modal id="journalModal" ref="jModal" title="New Journal" centered @shown="clearModal" @ok="handleOK">
             <b-form>
               <b-form-input type="text" placeholder="Title of Journal" required  @submit.stop.prevent="newJournal" v-model="newTitle"></b-form-input>
             </b-form>
           </b-modal>
-        <!-- List of Journals -->
+          <!-- List of Journals -->
+          <!-- Card View -->
           <b-row align-h="left"> 
             <b-col class="journal-col" sm="6" md="4" v-for="journal in filteredList" :key="journal.title">
               <JournalCard v-bind:currentUsername="currentUsername" v-bind:journal="journal"/>
             </b-col> 
           </b-row>
-          <!-- NEW STUFF TO WORK ON -->
+          <!-- List View -->
           <b-row>
             <b-list-group flush style="width: 100%; text-align: left;">
               <b-list-group-item v-for="journal in filteredList" :key="journal.title">
@@ -81,9 +82,8 @@ export default {
     JournalCard,
     JournalListItem
   },
-  // props:{
+  // props:{},
 
-  // },
   data() {
     return {
       journals: [], // Stores all of the user's journals retrieved from Cloud Firestore
@@ -168,6 +168,7 @@ export default {
       })
     },
 
+    /** Refreshes the list of journals. */
     refreshJournals() {
       this.journals = []
       this.getJournals()
@@ -191,10 +192,6 @@ export default {
       })
     }
   }, 
-  watch: {
-    
-
-  },
 }
 </script>
 
@@ -266,27 +263,6 @@ export default {
 .top-row {
   margin: 25px 0;
 }
-.view-btn {
-  text-align: center;
-  margin: 5px 0 0 0;
-  border: 3px solid white;
-  border-radius: 0;
-  background-color: rgba(0, 0, 0, 0);
-}
-.view-btn > a {
-  color: white;
-}
-.view-btn > a:hover {
-  color: rgb(43, 47, 53);
-}
-.view-btn:hover {
-  border: 3px solid white;
-  background-color: rgba(255, 255, 255, 1);
-}
-.view-btn:active {
-  border: 3px solid rgba(255, 255, 255, 0) !important;
-  background-color: rgba(255, 255, 255, 0.2) !important;
-}
 .add-journal-btn {
   width: 100%;
   color: white;
@@ -301,7 +277,7 @@ export default {
   border: 0;
   border-bottom: 2px solid rgb(43, 47, 53);
 }
-/* When screen is Small or XS*/
+/* When screen is smaller or equal to Small*/
 @media (max-width: 767px) {
   .chr-container {
     margin: 60px 0 55px;
@@ -319,12 +295,11 @@ export default {
     display: block;
     padding: 10px 20px 0;
   }
-  
   .journal-col{
     padding: 15px 30px;
   }
 }
-/* When screen is Medium or larger */
+/* When screen is bigger or equal to Medium */
 @media (min-width: 992px) {
   .chr-sidebar-col {
     height: 100%;
